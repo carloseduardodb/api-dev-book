@@ -16,15 +16,15 @@ type User struct {
 	DeletedAt string `json:"deleted_at,omitempty"`
 }
 
-func (user *User) Prepare() error {
-	if err := user.validation(); err != nil {
+func (user *User) Prepare(step string) error {
+	if err := user.validation(step); err != nil {
 		return err
 	}
 	user.format()
 	return nil
 }
 
-func (user *User) validation() error {
+func (user *User) validation(step string) error {
 	if user.Name == "" {
 		return errors.New("name is required")
 	}
@@ -35,7 +35,7 @@ func (user *User) validation() error {
 	if user.Email == "" {
 		return errors.New("email is required")
 	}
-	if user.Password == "" {
+	if step == "register" && user.Password == "" {
 		return errors.New("password is required")
 	}
 	return nil
