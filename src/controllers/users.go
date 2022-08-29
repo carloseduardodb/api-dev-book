@@ -5,6 +5,7 @@ import (
 	"api/src/models"
 	"api/src/repositories"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -15,6 +16,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	var user models.User
 	if err = json.Unmarshal(body, &user); err != nil {
 		log.Fatal(err)
@@ -26,7 +28,12 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	repository := repositories.NewRepositoryUsers(db)
-	repository.Create(user)
+	id, err := repository.Create(user)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	w.Write([]byte(fmt.Sprintf("User created with id: %d", id)))
 }
 
 func GetUsers(w http.ResponseWriter, r *http.Request) {
