@@ -122,3 +122,16 @@ func (userRepo *Users) Follow(userId uint64, followedId uint64) error {
 	}
 	return nil
 }
+
+func (userRepo *Users) Unfollow(userId uint64, followedId uint64) error {
+	statement, err := userRepo.db.Prepare("DELETE FROM follows WHERE user_id = ? AND following_id = ?")
+	if err != nil {
+		return err
+	}
+	defer statement.Close()
+	_, err = statement.Exec(userId, followedId)
+	if err != nil {
+		return err
+	}
+	return nil
+}
