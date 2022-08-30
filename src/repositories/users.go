@@ -109,3 +109,16 @@ func (userRepo *Users) FindByEmail(email string) (models.User, error) {
 	}
 	return user, nil
 }
+
+func (userRepo *Users) Follow(userId uint64, followedId uint64) error {
+	statement, err := userRepo.db.Prepare("INSERT INTO follows(user_id, following_id) VALUES(?, ?)")
+	if err != nil {
+		return err
+	}
+	defer statement.Close()
+	_, err = statement.Exec(userId, followedId)
+	if err != nil {
+		return err
+	}
+	return nil
+}
