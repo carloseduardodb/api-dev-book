@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"api/src/auth"
 	"api/src/database"
 	"api/src/models"
 	"api/src/repositories"
@@ -44,11 +45,10 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// token, err := security.GenerateToken(userDatabase)
-	// if err != nil {
-	// 	responses.ERROR(w, http.StatusUnprocessableEntity, err)
-	// 	return
-	// }
-
-	responses.JSON(w, http.StatusOK, userDatabase.Email)
+	token, err := auth.CreateToken(userDatabase.ID)
+	if err != nil {
+		responses.ERROR(w, http.StatusInternalServerError, err)
+		return
+	}
+	responses.JSON(w, http.StatusOK, map[string]string{"token": token})
 }
