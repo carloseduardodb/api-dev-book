@@ -181,3 +181,30 @@ func (userRepo *Users) FindFollowing(userId uint64) ([]models.User, error) {
 	}
 	return users, nil
 }
+
+func (userRepo *Users) FindByID(id uint64) (models.User, error) {
+	statement, err := userRepo.db.Prepare("SELECT id, name, nick, email, password, created_at FROM users WHERE id = ?")
+	if err != nil {
+		return models.User{}, err
+	}
+	defer statement.Close()
+	var user models.User
+	err = statement.QueryRow(id).Scan(&user.ID, &user.Name, &user.Nick, &user.Email, &user.Password, &user.CreatedAt)
+	if err != nil {
+		return models.User{}, err
+	}
+	return user, nil
+}
+
+func (userRepo *Users) UpdatePassword(user models.User) error {
+	statement, err := userRepo.db.Prepare("UPDATE users SET password = ? WHERE id = ?")
+	if err != nil {
+		return err
+	}
+	defer statement.Close()
+	_, err = statement.Exec(user.Password, user.ID)
+	if err != nil {
+		return err
+	}
+	return nil
+}

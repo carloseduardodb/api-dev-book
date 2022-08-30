@@ -6,6 +6,7 @@ import (
 	"api/src/models"
 	"api/src/repositories"
 	"api/src/responses"
+	"api/src/security"
 	"encoding/json"
 	"errors"
 	"io/ioutil"
@@ -267,4 +268,49 @@ func GetFollowing(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	responses.JSON(w, http.StatusOK, following)
+}
+
+func UpdatePassword(w http.ResponseWriter, r *http.Request) {
+	tokenUserID, err := auth.ExtractUserID(r)
+	if err != nil {
+		responses.ERROR(w, http.StatusUnauthorized, err)
+		return
+	}
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		responses.ERROR(w, http.StatusUnprocessableEntity, err)
+		return
+	}
+	var pass models.ChangePassword
+	if err := json.Unmarshal(body, &pass); err != nil {
+		responses.ERROR(w, http.StatusUnprocessableEntity, err)
+		return
+	}
+	db, err := database.Connect()
+	if err != nil {
+		responses.ERROR(w, http.StatusInternalServerError, err)
+		return
+	}
+	defer db.Close()
+	repository := repositories.NewRepositoryUsers(db)
+	userDatabase, err := repository.FindByID(tokenUserID)
+	if err != nil {
+		responses.ERROR(w, http.StatusUnauthorized, err)
+		return
+	}
+	if err := security.CheckPasswordHash(userDatabase.Password, pass.Password); err != nil {
+		responses.ERROR(w, http.StatusUnauthorized, errors.New("password is incorrect"))
+		return
+	}
+	hashedNewPassword, err := security.Hash(pass.NewPassword)
+	if err != nil {
+		responses.ERROR(w, http.StatusInternalServerError, err)
+		return
+	}
+	userDatabase.Password = string(hashedNewPassword)
+	if err := repository.UpdatePassword(userDatabase); err != nil {
+		responses.ERROR(w, http.StatusInternalServerError, err)
+		return
+	}
+	responses.JSON(w, http.StatusNoContent, nil)
 }
