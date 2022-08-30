@@ -135,3 +135,49 @@ func (userRepo *Users) Unfollow(userId uint64, followedId uint64) error {
 	}
 	return nil
 }
+
+func (userRepo *Users) FindFollowers(userId uint64) ([]models.User, error) {
+	statement, err := userRepo.db.Prepare("SELECT id, name, nick, email, created_at FROM users WHERE id IN (SELECT user_id FROM follows WHERE following_id = ?)")
+	if err != nil {
+		return nil, err
+	}
+	defer statement.Close()
+	rows, err := statement.Query(userId)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	users := []models.User{}
+	for rows.Next() {
+		var user models.User
+		err := rows.Scan(&user.ID, &user.Name, &user.Nick, &user.Email, &user.CreatedAt)
+		if err != nil {
+			return nil, err
+		}
+		users = append(users, user)
+	}
+	return users, nil
+}
+
+func (userRepo *Users) FindFollowing(userId uint64) ([]models.User, error) {
+	statement, err := userRepo.db.Prepare("SELECT id, name, nick, email, created_at FROM users WHERE id IN (SELECT following_id FROM follows WHERE user_id = ?)")
+	if err != nil {
+		return nil, err
+	}
+	defer statement.Close()
+	rows, err := statement.Query(userId)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	users := []models.User{}
+	for rows.Next() {
+		var user models.User
+		err := rows.Scan(&user.ID, &user.Name, &user.Nick, &user.Email, &user.CreatedAt)
+		if err != nil {
+			return nil, err
+		}
+		users = append(users, user)
+	}
+	return users, nil
+}
