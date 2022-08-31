@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"api/src/auth"
 	"api/src/database"
 	"api/src/models"
 	"api/src/repositories"
@@ -31,12 +32,29 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 		responses.ERROR(w, http.StatusBadRequest, err)
 		return
 	}
+
+	userID, err := auth.ExtractUserID(r)
+	if err != nil {
+		responses.ERROR(w, http.StatusUnauthorized, err)
+		return
+	}
+
+	post.AuthorId = userID
+
 	db, err := database.Connect()
 	if err != nil {
 		responses.ERROR(w, http.StatusInternalServerError, err)
 		return
 	}
 	defer db.Close()
+
+	userRepo := repositories.NewRepositoryUsers(db)
+	userDatabase, err := userRepo.FindById(userID)
+	if err != nil {
+		responses.ERROR(w, http.StatusUnauthorized, err)
+		return
+	}
+	post.AuthorNick = userDatabase.Nick
 
 	repository := repositories.NewRepositoryPosts(db)
 	post.ID, err = repository.Create(post)

@@ -7,7 +7,7 @@ type Post struct {
 	Title      string `json:"title"`
 	Content    string `json:"content"`
 	AuthorId   uint64 `json:"author_id"`
-	AuthorNick uint64 `json:"author_nick"`
+	AuthorNick string `json:"author_nick"`
 	Likes      uint64 `json:"likes"`
 	CreatedAt  string `json:"created_at"`
 	UpdatedAt  string `json:"updated_at"`
