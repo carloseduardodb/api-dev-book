@@ -33,7 +33,7 @@ func (postRepo Posts) Create(post models.Post) (uint64, error) {
 
 func (postRepo *Posts) Find(titleOrContent string) ([]models.Post, error) {
 	titleOrContent = fmt.Sprintf("%%%s%%", titleOrContent)
-	statement, err := postRepo.db.Prepare("SELECT id, title, content, author_id, author_nick, likes, created_at, updated_at, deleted_at FROM posts WHERE title LIKE ? OR content LIKE ?")
+	statement, err := postRepo.db.Prepare("SELECT id, title, content, author_id, author_nick, likes, created_at FROM posts WHERE title LIKE ? OR content LIKE ?")
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +46,7 @@ func (postRepo *Posts) Find(titleOrContent string) ([]models.Post, error) {
 	posts := []models.Post{}
 	for rows.Next() {
 		var post models.Post
-		err := rows.Scan(&post.ID, &post.Title, &post.Content, &post.AuthorId, &post.AuthorNick, &post.Likes, &post.CreatedAt, &post.UpdatedAt, &post.DeletedAt)
+		err := rows.Scan(&post.ID, &post.Title, &post.Content, &post.AuthorId, &post.AuthorNick, &post.Likes, &post.CreatedAt)
 		if err != nil {
 			return nil, err
 		}
@@ -56,14 +56,14 @@ func (postRepo *Posts) Find(titleOrContent string) ([]models.Post, error) {
 }
 
 func (postRepo *Posts) FindById(id uint64) (models.Post, error) {
-	statement, err := postRepo.db.Prepare("SELECT id, title, content, author_id, author_nick, likes, created_at, updated_at, deleted_at FROM posts WHERE id = ?")
+	statement, err := postRepo.db.Prepare("SELECT id, title, content, author_id, author_nick, likes, created_at FROM posts WHERE id = ?")
 	if err != nil {
 		return models.Post{}, err
 	}
 	defer statement.Close()
 	row := statement.QueryRow(id)
 	var post models.Post
-	err = row.Scan(&post.ID, &post.Title, &post.Content, &post.AuthorId, &post.AuthorNick, &post.Likes, &post.CreatedAt, &post.UpdatedAt, &post.DeletedAt)
+	err = row.Scan(&post.ID, &post.Title, &post.Content, &post.AuthorId, &post.AuthorNick, &post.Likes, &post.CreatedAt)
 	if err != nil {
 		return models.Post{}, err
 	}

@@ -3,15 +3,15 @@ package models
 import "errors"
 
 type Post struct {
-	ID         uint64 `json:"id"`
-	Title      string `json:"title"`
-	Content    string `json:"content"`
-	AuthorId   uint64 `json:"author_id"`
-	AuthorNick string `json:"author_nick"`
-	Likes      uint64 `json:"likes"`
-	CreatedAt  string `json:"created_at"`
-	UpdatedAt  string `json:"updated_at"`
-	DeletedAt  string `json:"deleted_at"`
+	ID         uint64 `json:"id,omitempty"`
+	Title      string `json:"title,omitempty"`
+	Content    string `json:"content,omitempty"`
+	AuthorId   uint64 `json:"author_id,omitempty"`
+	AuthorNick string `json:"author_nick,omitempty"`
+	Likes      uint64 `json:"likes,omitempty"`
+	CreatedAt  string `json:"created_at,omitempty"`
+	UpdatedAt  string `json:"updated_at,omitempty"`
+	DeletedAt  string `json:"deleted_at,omitempty"`
 }
 
 func (post *Post) Prepare() error {
