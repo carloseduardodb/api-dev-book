@@ -181,7 +181,7 @@ func LikePost(w http.ResponseWriter, r *http.Request) {
 		responses.ERROR(w, http.StatusInternalServerError, err)
 		return
 	}
-	responses.JSON(w, http.StatusOK, "")
+	responses.JSON(w, http.StatusOK, nil)
 }
 
 func UnlikePost(w http.ResponseWriter, r *http.Request) {
@@ -203,5 +203,5 @@ func UnlikePost(w http.ResponseWriter, r *http.Request) {
 		responses.ERROR(w, http.StatusInternalServerError, err)
 		return
 	}
-	responses.JSON(w, http.StatusOK, "")
+	responses.JSON(w, http.StatusOK, nil)
 }
