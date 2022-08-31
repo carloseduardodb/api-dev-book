@@ -71,12 +71,12 @@ func (postRepo *Posts) FindById(id uint64) (models.Post, error) {
 }
 
 func (postRepo *Posts) Update(post models.Post) error {
-	statement, err := postRepo.db.Prepare("UPDATE posts SET title = ?, content = ?, author_id = ?, author_nick = ?, likes = ?, created_at = ?, updated_at = ?, deleted_at = ? WHERE id = ?")
+	statement, err := postRepo.db.Prepare("UPDATE posts SET title = ?, content = ? WHERE id = ?")
 	if err != nil {
 		return err
 	}
 	defer statement.Close()
-	_, err = statement.Exec(post.Title, post.Content, post.AuthorId, post.AuthorNick, post.Likes, post.CreatedAt, post.UpdatedAt, post.DeletedAt, post.ID)
+	_, err = statement.Exec(post.Title, post.Content, post.ID)
 	if err != nil {
 		return err
 	}
