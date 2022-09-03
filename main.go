@@ -16,7 +16,8 @@ func main() {
 	/* disable cors */
 	cors := cors.New(cors.Options{
 		AllowedOrigins:   []string{"*"},
-		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD", "PATCH", "TRACE"},
+		AllowedHeaders:   []string{"*"},
 		AllowCredentials: true,
 	})
 	handler := cors.Handler(r)
