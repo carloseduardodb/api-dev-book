@@ -9,14 +9,16 @@ import (
 )
 
 type User struct {
-	ID        uint64 `json:"id,omitempty"`
-	Name      string `json:"name,omitempty"`
-	Nick      string `json:"nick,omitempty"`
-	Email     string `json:"email,omitempty"`
-	Password  string `json:"password,omitempty"`
-	CreatedAt string `json:"created_at,omitempty"`
-	UpdatedAt string `json:"updated_at,omitempty"`
-	DeletedAt string `json:"deleted_at,omitempty"`
+	ID             uint64 `json:"id,omitempty"`
+	Name           string `json:"name,omitempty"`
+	Nick           string `json:"nick,omitempty"`
+	Email          string `json:"email,omitempty"`
+	Password       string `json:"password,omitempty"`
+	CountFollowers uint64 `json:"count_followers"`
+	IsFollowing    bool   `json:"is_following"`
+	CreatedAt      string `json:"created_at,omitempty"`
+	UpdatedAt      string `json:"updated_at,omitempty"`
+	DeletedAt      string `json:"deleted_at,omitempty"`
 }
 
 func (user *User) Prepare(step string) error {

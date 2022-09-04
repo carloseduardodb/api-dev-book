@@ -54,6 +54,11 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 
 func GetUsers(w http.ResponseWriter, r *http.Request) {
 	nameOrNick := strings.ToLower(r.URL.Query().Get("name_or_nick"))
+	tokenUserID, err := auth.ExtractUserID(r)
+	if err != nil {
+		responses.ERROR(w, http.StatusUnauthorized, err)
+		return
+	}
 	db, err := database.Connect()
 	if err != nil {
 		responses.ERROR(w, http.StatusInternalServerError, err)
@@ -61,7 +66,7 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 	repository := repositories.NewRepositoryUsers(db)
-	users, err := repository.Find(nameOrNick)
+	users, err := repository.Find(nameOrNick, tokenUserID)
 	if err != nil {
 		responses.ERROR(w, http.StatusInternalServerError, err)
 		return

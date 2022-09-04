@@ -31,14 +31,18 @@ func (userRepo Users) Create(user models.User) (uint64, error) {
 	return uint64(id), nil
 }
 
-func (userRepo *Users) Find(nameOrNick string) ([]models.User, error) {
+func (userRepo *Users) Find(nameOrNick string, userID uint64) ([]models.User, error) {
 	nameOrNick = fmt.Sprintf("%%%s%%", nameOrNick)
-	statement, err := userRepo.db.Prepare("SELECT id, name, nick, email, created_at FROM users WHERE name LIKE ? OR nick LIKE ?")
+	statement, err := userRepo.db.Prepare(
+		`SELECT us.id, us.name, us.nick, us.email, us.created_at, 
+		(select count(*) from follows where user_id = us.id) as count_followers,
+		(select count(*) from follows where user_id = us.id and following_id = ?) as is_following
+		FROM users as us WHERE us.name LIKE ? OR us.nick LIKE ?`)
 	if err != nil {
 		return nil, err
 	}
 	defer statement.Close()
-	rows, err := statement.Query(nameOrNick, nameOrNick)
+	rows, err := statement.Query(userID, nameOrNick, nameOrNick)
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +50,7 @@ func (userRepo *Users) Find(nameOrNick string) ([]models.User, error) {
 	users := []models.User{}
 	for rows.Next() {
 		var user models.User
-		err := rows.Scan(&user.ID, &user.Name, &user.Nick, &user.Email, &user.CreatedAt)
+		err := rows.Scan(&user.ID, &user.Name, &user.Nick, &user.Email, &user.CreatedAt, &user.CountFollowers, &user.IsFollowing)
 		if err != nil {
 			return nil, err
 		}
