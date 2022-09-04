@@ -43,3 +43,18 @@ CREATE TABLE IF NOT EXISTS posts (
     updated_at timestamp default current_timestamp on update current_timestamp,
     deleted_at  DATETIME  NULL
 ) ENGINE=INNODB;
+
+CREATE TABLE IF NOT EXISTS user_like (
+    user_id int not null,
+    foreign key (user_id) 
+    references users(id) 
+    on delete cascade,
+    post_id int not null,
+    foreign key (post_id)
+    references posts(id),
+    created_at timestamp default current_timestamp,
+    updated_at timestamp default current_timestamp on update current_timestamp,
+    deleted_at  DATETIME  NULL,
+    primary key (user_id, post_id)
+) ENGINE=INNODB;
+
