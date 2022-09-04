@@ -37,12 +37,14 @@ func (postRepo *Posts) Find(titleOrContent string, userID uint64) ([]models.Post
 		`SELECT 
 		p.id, p.title, p.content, p.author_id, p.author_nick, p.likes, p.created_at, 
 		(SELECT user_id from user_like where user_id = ? and post_id = p.id LIMIT 1) IS NOT NULL as liked 
-		FROM posts AS p WHERE p.title LIKE ? OR p.content LIKE ?`)
+		FROM posts AS p WHERE (p.title LIKE ? OR p.content LIKE ?)
+		AND p.author_id IN (SELECT user_id FROM follows WHERE following_id = ?)
+		`)
 	if err != nil {
 		return nil, err
 	}
 	defer statement.Close()
-	rows, err := statement.Query(userID, titleOrContent, titleOrContent)
+	rows, err := statement.Query(userID, titleOrContent, titleOrContent, userID)
 	if err != nil {
 		return nil, err
 	}
