@@ -1,0 +1,33 @@
+_id: req_86304b99c8354c5e96ff2108da67b272
+type: Request
+parentId: fld_3a8ec4506b464cd9867002315441e880
+modified: 1661982363701
+created: 1661893047161
+url: "{{ _.local }}/user/update/password "
+name: update-password
+description: ""
+method: PUT
+body:
+  mimeType: application/json
+  text: |-
+    {
+    	"password": "1234567",
+    	"new_password": "12345678"
+    }
+parameters: []
+headers:
+  - name: Content-Type
+    value: application/json
+    id: pair_4ab3519fac664efbac32c488ed24f7ca
+authentication:
+  type: bearer
+  token: "{% response 'body', 'req_0bf9561fad684de9b641bf59c70b3758',
+    'b64::JC50b2tlbg==::46b', 'always', 60 %}"
+metaSortKey: -1661893047161
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global

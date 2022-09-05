@@ -1,0 +1,32 @@
+_id: req_a0efbbd03b3348a4a70e605039489406
+type: Request
+parentId: fld_3a8ec4506b464cd9867002315441e880
+modified: 1662328375538
+created: 1661783761588
+url: "{{ _.local }}/user"
+name: create-user
+description: ""
+method: POST
+body:
+  mimeType: application/json
+  text: |-
+    {
+    	"name": "joao silva",
+    	"nick": "joao",
+    	"email": "joao@gmail.com",
+    	"password": "1234567"
+    }
+parameters: []
+headers:
+  - name: Content-Type
+    value: application/json
+    id: pair_a99117085a714248a72b2db431403e34
+authentication: {}
+metaSortKey: -1661825067760.5
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global
